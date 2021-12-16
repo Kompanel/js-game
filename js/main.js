@@ -1,7 +1,7 @@
 let game
 
 const width = 1024
-const height = 720
+const height = 540
 
 window.onload = function () {
 
