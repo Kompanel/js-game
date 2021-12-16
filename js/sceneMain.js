@@ -2,6 +2,7 @@ class SceneMain extends Phaser.Scene {
     constructor() {
         super('SceneMain');
         this.level = 1
+        this.pause = false
     }
 
     preload() {
@@ -15,7 +16,7 @@ class SceneMain extends Phaser.Scene {
 
     create() {
 
-        this.player = this.physics.add.sprite(100, 100, 'pagman')
+        this.player = this.physics.add.sprite(150, 150, 'pagman')
         this.player.body.collideWorldBounds = true
 
         this.point = this.physics.add.sprite(200, 200, 'coin')
@@ -53,12 +54,16 @@ class SceneMain extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys()
 
-        this.coinsInBagText = this.add.text(width - 150, 0, "Coins in bag: " + this.coinsInBag, {
+        this.coinsInBagText = this.add.text(width - 150, 5, "Coins in bag: " + this.coinsInBag, {
             font: "20px Arial",
             fill: "#000000"
         })
         this.coinsInHomeText = this.add.text(5, 5, "Coins in home: " + this.coinsInHome, {
             font: "20px Arial",
+            fill: "#000000"
+        })
+        this.add.text(width / 2 - 50, 5, "Level: " + this.level, {
+            font: "30px Arial",
             fill: "#000000"
         })
         this.infoText = this.add.text(width / 2 - 120, height / 2 - 100, "", {
@@ -72,45 +77,51 @@ class SceneMain extends Phaser.Scene {
         this.player.body.velocity.x = 0
         this.player.body.velocity.y = 0
 
-        if (this.thief.x > this.player.x) {
+        this.thief.body.velocity.x = 0
+        this.thief.body.velocity.y = 0
 
-            this.thief.body.velocity.x = -100
+        if (!this.pause) {
+            if (this.thief.x > this.player.x) {
+
+                this.thief.body.velocity.x = -100
+    
+            } else if (this.thief.x < this.player.x) {
+    
+                this.thief.body.velocity.x = 100
+            }
+    
+            if (this.thief.y > this.player.y) {
+    
+                this.thief.body.velocity.y = -100
+            } else if (this.thief.y < this.player.y) {
+    
+                this.thief.body.velocity.y = 100
+            }
+    
+    
+            if (this.cursors.left.isDown) {
+    
+                this.player.body.velocity.x = -260 + this.coinsInBag * 20
+                this.player.angle = 180;
+            }
+            if (this.cursors.right.isDown) {
+    
+                this.player.body.velocity.x = 260 - this.coinsInBag * 20
+                this.player.angle = 0;
+            }
+            if (this.cursors.up.isDown) {
+    
+                this.player.body.velocity.y = -260 + this.coinsInBag * 20
+                this.player.angle = 270;
+            }
+            if (this.cursors.down.isDown) {
+    
+                this.player.body.velocity.y = 260 - this.coinsInBag * 20
+                this.player.angle = 90;
+            }
         }
-        else if (this.thief.x < this.player.x) {
 
-            this.thief.body.velocity.x = 100
-        }
-
-        if (this.thief.y > this.player.y) {
-
-            this.thief.body.velocity.y = -100
-        }
-        else if (this.thief.y < this.player.y) {
-
-            this.thief.body.velocity.y = 100
-        }
-
-
-        if (this.cursors.left.isDown) {
-
-            this.player.body.velocity.x = -260 + this.coinsInBag * 20
-            this.player.angle = 180;
-        }
-        if (this.cursors.right.isDown) {
-
-            this.player.body.velocity.x = 260 - this.coinsInBag * 20
-            this.player.angle = 0;
-        }
-        if (this.cursors.up.isDown) {
-
-            this.player.body.velocity.y = -260 + this.coinsInBag * 20
-            this.player.angle = 270;
-        }
-        if (this.cursors.down.isDown) {
-
-            this.player.body.velocity.y = 260 - this.coinsInBag * 20
-            this.player.angle = 90;
-        }
+        
 
         this.physics.collide(this.player, this.point, () => {
 
@@ -132,30 +143,45 @@ class SceneMain extends Phaser.Scene {
 
             if (this.coinsInHome >= this.level * 10) {
 
-                this.scene.pause()
-                this.infoText.text = "   Level passed\nCoins collected: " + this.coinsInHome
+                this.pause = true
+
+                this.infoText.text = "   Level passed\nCoins collected: " + this.coinsInHome + "\n  Loading level: " + (this.level + 1)
                 this.coinsInBagText.text = ""
                 this.coinsInHomeText.text = ""
+
+                this.time.addEvent({delay: 2000, callback: () => {
+                    this.level += 1
+                    this.pause = false
+                    this.scene.restart()
+                }})
             }
         })
 
         this.physics.collide(this.player, this.thief, () => {
 
+            console.log("KOLIZJA Z WIDEHARDO POLICE")
+
             this.coinsInBag = 0
             this.coinsInBagText.text = "Coins in bag: " + this.coinsInBag
 
-            this.scene.pause()
-            this.infoText.text = "     COLLISION\nYou lost your coins"
-            this.coinsInBagText.text = ""
-            this.coinsInHomeText.text = ""
+            // this.scene.pause()
+            // this.infoText.text = "     COLLISION\nYou lost your coins"
+            // this.coinsInBagText.text = ""
+            // this.coinsInHomeText.text = ""
         })
 
         this.physics.collide(this.player, this.holes, () => {
 
-            this.scene.pause()
-            this.infoText.text = "GAME OVER \n Your score: " + this.coinsInHome
+            this.pause = true
+
+            this.infoText.text = "  GAME OVER \n  Your score: " + this.coinsInHome + "\nReloading game"
             this.coinsInBagText.text = ""
             this.coinsInHomeText.text = ""
+
+            this.time.addEvent({delay: 5000, callback: () => {
+
+                window.location.reload()
+            }})
         })
 
         this.physics.collide(this.thief, this.wall)
