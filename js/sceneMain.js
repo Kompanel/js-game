@@ -164,10 +164,12 @@ class SceneMain extends Phaser.Scene {
             this.coinsInBag = 0
             this.coinsInBagText.text = "Coins in bag: " + this.coinsInBag
 
-            // this.scene.pause()
-            // this.infoText.text = "     COLLISION\nYou lost your coins"
-            // this.coinsInBagText.text = ""
-            // this.coinsInHomeText.text = ""
+            this.infoText.text = "     COLLISION\nYou lost your coins"
+
+            this.time.addEvent({delay: 2000, callback: () => {
+
+                this.infoText.text = ""
+            }})
         })
 
         this.physics.collide(this.player, this.holes, () => {
@@ -180,7 +182,9 @@ class SceneMain extends Phaser.Scene {
 
             this.time.addEvent({delay: 5000, callback: () => {
 
-                window.location.reload()
+                this.level = 1
+                this.pause = false
+                this.scene.restart()
             }})
         })
 
