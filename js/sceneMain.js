@@ -7,19 +7,46 @@ class SceneMain extends Phaser.Scene {
 
     preload() {
         this.load.image('pagman', 'images/pagman.png')
-        this.load.image('wall', 'images/overworldWall.png')
         this.load.image('coin', 'images/coin.png')
-        this.load.image('hole', 'images/hauseHole.png')
-        this.load.image('home', 'images/home.png')
         this.load.image('thief', 'images/widehardo.png')
-        this.load.image('grassBackground', 'images/hauseBackground.png')
-        this.load.image('dungeonBackground', 'images/XD.jpg')
+        this.load.image('home', 'images/home.png')
+        
+        this.load.image('grassWall', 'images/overworldWall.png')
+        this.load.image('grassHole', 'images/overworldHole.png')
+        this.load.image('grassBackground', 'images/overworldBackground.png')
+
+        this.load.image('homeBackground', 'images/hauseBackground.png')
+        this.load.image('homeHole', 'images/hauseHole.png')
+
+        this.load.image('dungeonBackground', 'images/dungeonBackground.png')
+        this.load.image('dungeonHole', 'images/dungeonHole.png')
+        this.load.image('dungeonWall', 'images/dungeonWall.png')
     }
 
     create() {
 
-        //this.add.image(505,375,'grassBackground')
-        this.add.image(511,270,'grassBackground')
+        switch (this.level) {
+            case 1: {
+                this.add.image(505, 375, 'grassBackground')
+                break
+            }
+
+            case 2: {
+                this.add.image(511, 270, 'homeBackground')
+                break
+            }
+
+            case 3: {
+                this.add.image(511,270,'dungeonBackground');
+                break;
+            }
+
+            default: {
+                this.add.image(505, 375, 'grassBackground')
+            }
+
+        }
+
         this.player = this.physics.add.sprite(150, 150, 'pagman')
         this.player.body.collideWorldBounds = true
 
@@ -37,8 +64,27 @@ class SceneMain extends Phaser.Scene {
 
         this.wall = this.physics.add.staticGroup()
         for (let x = 0; x < this.level * 5; x++) {
-            let brick = this.wall.create(Math.round(Math.random() * (width - 100) + 100),
-                Math.round(Math.random() * (height - 100) + 100), 'wall')
+
+            let brick;
+            
+            switch (this.level) {
+
+                case 1, 2:{
+                    brick = this.wall.create(Math.round(Math.random() * (width - 100) + 100),
+                        Math.round(Math.random() * (height - 100) + 100), 'grassWall')
+                    break
+                    }
+
+                case 3: {
+                    brick = this.wall.create(Math.round(Math.random() * (width - 100) + 100),
+                        Math.round(Math.random() * (height - 100) + 100), 'dungeonWall')
+                    break;
+                }
+                
+                default: brick = this.wall.create(Math.round(Math.random() * (width - 100) + 100),
+                Math.round(Math.random() * (height - 100) + 100), 'grassWall')
+
+            }
 
             brick.body.collideWorldBounds = true;
             brick.body.immovable = true
@@ -46,8 +92,34 @@ class SceneMain extends Phaser.Scene {
 
         this.holes = this.physics.add.staticGroup()
         for (let x = 0; x < this.level * 2; x++) {
-            let hole = this.holes.create(Math.round(Math.random() * (width - 100) + 100),
-                Math.round(Math.random() * (height - 100) + 100), 'hole')
+            let hole
+
+            switch (this.level) {
+
+                case 1: {
+                    hole = this.holes.create(Math.round(Math.random() * (width - 100) + 100),
+                        Math.round(Math.random() * (height - 100) + 100), 'grassHole')
+                    break
+                }
+
+                case 2: {
+                    hole = this.holes.create(Math.round(Math.random() * (width - 100) + 100),
+                    Math.round(Math.random() * (height - 100) + 100), 'homeHole')
+                    break
+                }
+
+                case 3: {
+                    hole = this.holes.create(Math.round(Math.random() * (width - 100) + 100),
+                    Math.round(Math.random() * (height - 100) + 100), 'dungeonHole')
+                    break
+                }
+
+                default: {
+                    hole = this.holes.create(Math.round(Math.random() * (width - 100) + 100),
+                        Math.round(Math.random() * (height - 100) + 100), 'grassHole')
+                }
+
+            }
 
             hole.body.collideWorldBounds = true;
             hole.body.immovable = true
@@ -88,44 +160,44 @@ class SceneMain extends Phaser.Scene {
             if (this.thief.x > this.player.x) {
 
                 this.thief.body.velocity.x = -100
-    
+
             } else if (this.thief.x < this.player.x) {
-    
+
                 this.thief.body.velocity.x = 100
             }
-    
+
             if (this.thief.y > this.player.y) {
-    
+
                 this.thief.body.velocity.y = -100
             } else if (this.thief.y < this.player.y) {
-    
+
                 this.thief.body.velocity.y = 100
             }
-    
-    
+
+
             if (this.cursors.left.isDown) {
-    
+
                 this.player.body.velocity.x = -260 + this.coinsInBag * 20
                 this.player.angle = 180;
             }
             if (this.cursors.right.isDown) {
-    
+
                 this.player.body.velocity.x = 260 - this.coinsInBag * 20
                 this.player.angle = 0;
             }
             if (this.cursors.up.isDown) {
-    
+
                 this.player.body.velocity.y = -260 + this.coinsInBag * 20
                 this.player.angle = 270;
             }
             if (this.cursors.down.isDown) {
-    
+
                 this.player.body.velocity.y = 260 - this.coinsInBag * 20
                 this.player.angle = 90;
             }
         }
 
-        
+
 
         this.physics.collide(this.player, this.point, () => {
 
@@ -145,7 +217,7 @@ class SceneMain extends Phaser.Scene {
             this.coinsInBagText.text = "Coins in bag: " + this.coinsInBag
             this.coinsInHomeText.text = "Coins in home: " + this.coinsInHome
 
-            if (this.coinsInHome >= this.level * 10) {
+            if (this.coinsInHome >= this.level * 1) {
 
                 this.pause = true
 
@@ -153,42 +225,33 @@ class SceneMain extends Phaser.Scene {
                 this.coinsInBagText.text = ""
                 this.coinsInHomeText.text = ""
 
-                this.time.addEvent({delay: 2000, callback: () => {
-                    this.level += 1
+                this.time.addEvent({
+                    delay: 2000, callback: () => {
+                        this.level += 1
 
-                    switch(this.level) {
-                        case 2: {
-                            console.log("case 2");
-                            this.add.image(505,375,'dungeonBackground')
-                            console.log("leaving case2");
-                            break;
-                        }
 
-                        case 3:{
+                        this.add.image(511, 270, 'homeBackground')
 
-                            break;
-                        }
+                        this.pause = false
+                        this.scene.restart()
                     }
-
-                    this.pause = false
-                    this.scene.restart()
-                }})
+                })
             }
         })
 
         this.physics.collide(this.player, this.thief, () => {
-
-            console.log("KOLIZJA Z WIDEHARDO POLICE")
 
             this.coinsInBag = 0
             this.coinsInBagText.text = "Coins in bag: " + this.coinsInBag
 
             this.infoText.text = "     COLLISION\nYou lost your coins"
 
-            this.time.addEvent({delay: 2000, callback: () => {
+            this.time.addEvent({
+                delay: 2000, callback: () => {
 
-                this.infoText.text = ""
-            }})
+                    this.infoText.text = ""
+                }
+            })
         })
 
         this.physics.collide(this.player, this.holes, () => {
@@ -199,12 +262,14 @@ class SceneMain extends Phaser.Scene {
             this.coinsInBagText.text = ""
             this.coinsInHomeText.text = ""
 
-            this.time.addEvent({delay: 5000, callback: () => {
+            this.time.addEvent({
+                delay: 5000, callback: () => {
 
-                this.level = 1
-                this.pause = false
-                this.scene.restart()
-            }})
+                    this.level = 1
+                    this.pause = false
+                    this.scene.restart()
+                }
+            })
         })
 
         this.physics.collide(this.thief, this.wall)
