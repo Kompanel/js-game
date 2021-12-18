@@ -7,15 +7,19 @@ class SceneMain extends Phaser.Scene {
 
     preload() {
         this.load.image('pagman', 'images/pagman.png')
-        this.load.image('wall', 'images/wall.png')
+        this.load.image('wall', 'images/overworldWall.png')
         this.load.image('coin', 'images/coin.png')
-        this.load.image('hole', 'images/hole.png')
+        this.load.image('hole', 'images/hauseHole.png')
         this.load.image('home', 'images/home.png')
         this.load.image('thief', 'images/widehardo.png')
+        this.load.image('grassBackground', 'images/hauseBackground.png')
+        this.load.image('dungeonBackground', 'images/XD.jpg')
     }
 
     create() {
 
+        //this.add.image(505,375,'grassBackground')
+        this.add.image(511,270,'grassBackground')
         this.player = this.physics.add.sprite(150, 150, 'pagman')
         this.player.body.collideWorldBounds = true
 
@@ -151,6 +155,21 @@ class SceneMain extends Phaser.Scene {
 
                 this.time.addEvent({delay: 2000, callback: () => {
                     this.level += 1
+
+                    switch(this.level) {
+                        case 2: {
+                            console.log("case 2");
+                            this.add.image(505,375,'dungeonBackground')
+                            console.log("leaving case2");
+                            break;
+                        }
+
+                        case 3:{
+
+                            break;
+                        }
+                    }
+
                     this.pause = false
                     this.scene.restart()
                 }})
