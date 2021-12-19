@@ -7,7 +7,10 @@ class SceneMain extends Phaser.Scene {
 
     preload() {
         this.load.image('pagman', 'images/pagman.png')
-        this.load.image('coin', 'images/coin.png')
+        this.load.spritesheet('coin', 'images/coin.png', {
+            frameWidth: 20,
+            frameHeight: 20
+        })
         this.load.image('thief', 'images/widehardo.png')
         this.load.image('home', 'images/home.png')
         
@@ -37,7 +40,7 @@ class SceneMain extends Phaser.Scene {
             }
 
             case 3: {
-                this.add.image(511,270,'dungeonBackground');
+                this.add.image(511,270,'dungeonBackground')
                 break;
             }
 
@@ -47,12 +50,24 @@ class SceneMain extends Phaser.Scene {
 
         }
 
+        
+
         this.player = this.physics.add.sprite(150, 150, 'pagman')
         this.player.body.collideWorldBounds = true
 
         this.point = this.physics.add.sprite(200, 200, 'coin')
         this.point.body.immovable = true
-
+        this.anims.create({
+            key: 'rotate',
+            frames: this.anims.generateFrameNumbers('coin', {
+                start: 0,
+                end: 5
+            }),
+            frameRate: 15,
+            yoyo: true,
+            repeat: -1
+        })
+        this.point.anims.play('rotate')
         this.home = this.physics.add.sprite(50, 70, 'home')
         this.home.body.collideWorldBounds = true
         this.home.body.immovable = true
@@ -198,7 +213,6 @@ class SceneMain extends Phaser.Scene {
         }
 
 
-
         this.physics.collide(this.player, this.point, () => {
 
             this.coinsInBag += 1
@@ -217,7 +231,7 @@ class SceneMain extends Phaser.Scene {
             this.coinsInBagText.text = "Coins in bag: " + this.coinsInBag
             this.coinsInHomeText.text = "Coins in home: " + this.coinsInHome
 
-            if (this.coinsInHome >= this.level * 1) {
+            if (this.coinsInHome >= this.level * 10) {
 
                 this.pause = true
 
