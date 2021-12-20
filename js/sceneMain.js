@@ -13,7 +13,7 @@ class SceneMain extends Phaser.Scene {
         })
         this.load.image('thief', 'images/widehardo.png')
         this.load.image('home', 'images/home.png')
-        
+
         this.load.image('grassWall', 'images/overworldWall.png')
         this.load.image('grassHole', 'images/overworldHole.png')
         this.load.image('grassBackground', 'images/overworldBackground.png')
@@ -40,7 +40,7 @@ class SceneMain extends Phaser.Scene {
             }
 
             case 3: {
-                this.add.image(511,270,'dungeonBackground')
+                this.add.image(511, 270, 'dungeonBackground')
                 break;
             }
 
@@ -50,7 +50,7 @@ class SceneMain extends Phaser.Scene {
 
         }
 
-        
+
 
         this.player = this.physics.add.sprite(150, 150, 'pagman')
         this.player.body.collideWorldBounds = true
@@ -81,23 +81,23 @@ class SceneMain extends Phaser.Scene {
         for (let x = 0; x < this.level * 5; x++) {
 
             let brick;
-            
+
             switch (this.level) {
 
-                case 1, 2:{
+                case 1, 2: {
                     brick = this.wall.create(Math.round(Math.random() * (width - 100) + 100),
                         Math.round(Math.random() * (height - 100) + 100), 'grassWall')
                     break
-                    }
+                }
 
                 case 3: {
                     brick = this.wall.create(Math.round(Math.random() * (width - 100) + 100),
                         Math.round(Math.random() * (height - 100) + 100), 'dungeonWall')
                     break;
                 }
-                
+
                 default: brick = this.wall.create(Math.round(Math.random() * (width - 100) + 100),
-                Math.round(Math.random() * (height - 100) + 100), 'grassWall')
+                    Math.round(Math.random() * (height - 100) + 100), 'grassWall')
 
             }
 
@@ -119,13 +119,13 @@ class SceneMain extends Phaser.Scene {
 
                 case 2: {
                     hole = this.holes.create(Math.round(Math.random() * (width - 100) + 100),
-                    Math.round(Math.random() * (height - 100) + 100), 'homeHole')
+                        Math.round(Math.random() * (height - 100) + 100), 'homeHole')
                     break
                 }
 
                 case 3: {
                     hole = this.holes.create(Math.round(Math.random() * (width - 100) + 100),
-                    Math.round(Math.random() * (height - 100) + 100), 'dungeonHole')
+                        Math.round(Math.random() * (height - 100) + 100), 'dungeonHole')
                     break
                 }
 
@@ -231,7 +231,7 @@ class SceneMain extends Phaser.Scene {
             this.coinsInBagText.text = "Coins in bag: " + this.coinsInBag
             this.coinsInHomeText.text = "Coins in home: " + this.coinsInHome
 
-            if (this.coinsInHome >= this.level * 10) {
+            if (this.coinsInHome >= this.level * 1) {
 
                 this.pause = true
 
